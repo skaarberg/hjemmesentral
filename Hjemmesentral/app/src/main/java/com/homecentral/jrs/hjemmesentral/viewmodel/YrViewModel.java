@@ -5,13 +5,13 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 
 import com.homecentral.jrs.hjemmesentral.database.YrRepository;
-import com.homecentral.jrs.hjemmesentral.model.yr.WeatherData;
+import com.homecentral.jrs.hjemmesentral.model.yr.LongTermWeatherData;
 
 public class YrViewModel extends AndroidViewModel {
 
     private YrRepository mRepository;
 
-    private LiveData<WeatherData> mWeatherData;
+    private LiveData<LongTermWeatherData> mWeatherData;
 
     public YrViewModel (Application application) {
         super(application);
@@ -19,7 +19,7 @@ public class YrViewModel extends AndroidViewModel {
         mWeatherData = mRepository.getWeatherData();
     }
 
-    public LiveData<WeatherData> getWeatherData() { return mWeatherData; }
+    public LiveData<LongTermWeatherData> getWeatherData() { return mWeatherData; }
 
-    public void insert(WeatherData weatherData) { mRepository.insert(weatherData); }
+    public void insert(LongTermWeatherData weatherData) { mRepository.insert(weatherData); }
 }

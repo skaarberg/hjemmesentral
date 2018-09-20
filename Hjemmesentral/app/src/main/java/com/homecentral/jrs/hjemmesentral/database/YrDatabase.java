@@ -6,9 +6,9 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-import com.homecentral.jrs.hjemmesentral.model.yr.WeatherData;
+import com.homecentral.jrs.hjemmesentral.model.yr.LongTermWeatherData;
 
-@Database(entities = {WeatherData.class}, version = 2)
+@Database(entities = {LongTermWeatherData.class}, version = 3)
 @TypeConverters(WeatherdataConverter.class)
 public abstract class YrDatabase extends RoomDatabase {
 
@@ -21,7 +21,7 @@ public abstract class YrDatabase extends RoomDatabase {
             synchronized (YrDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            YrDatabase.class, "yr_weather_data")
+                            YrDatabase.class, "yr_long_term_weather_data")
                             .build();
                 }
             }

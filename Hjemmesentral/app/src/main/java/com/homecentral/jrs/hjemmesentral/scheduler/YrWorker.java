@@ -16,7 +16,7 @@ public class YrWorker extends Worker {
         try {
             YrNetworkUtil.fetchYrData(getApplicationContext());
             return Worker.Result.SUCCESS;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Worker.Result.FAILURE;
         }

@@ -6,17 +6,17 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.homecentral.jrs.hjemmesentral.model.yr.WeatherData;
+import com.homecentral.jrs.hjemmesentral.model.yr.LongTermWeatherData;
 
 @Dao
 public interface YrDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(WeatherData weatherData);
+    void insert(LongTermWeatherData weatherData);
 
-    @Query("DELETE FROM yr_weather_data")
+    @Query("DELETE FROM yr_long_term_weather_data")
     void deleteAll();
 
-    @Query("SELECT * FROM yr_weather_data")
-    LiveData<WeatherData> getWeatherData();
+    @Query("SELECT * FROM yr_long_term_weather_data")
+    LiveData<LongTermWeatherData> getWeatherData();
 }
