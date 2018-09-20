@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="100"
+    android:id="@+id/root_container"
+    tools:context=".activity.MainActivity">
+
+    <fragment
+        tools:layout="@layout/fragment_ruter"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:name="com.homecentral.jrs.hjemmesentral.fragment.RuterFragment"
+        android:id="@+id/fragment"
+        android:layout_weight="50"/>
+
+    <fragment
+        tools:layout="@layout/fragment_yr"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:name="com.homecentral.jrs.hjemmesentral.fragment.YrFragment"
+        android:id="@+id/fragmentTemp"
+        android:layout_weight="50"/>
+
+</LinearLayout>
