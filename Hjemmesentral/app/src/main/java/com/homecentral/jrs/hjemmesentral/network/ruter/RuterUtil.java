@@ -12,7 +12,9 @@ import com.homecentral.jrs.hjemmesentral.util.PreferenceHelper;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -47,14 +49,17 @@ public class RuterUtil {
             final RuterRepository ruterRepository = new RuterRepository(context);
 
             List<Departure> departures = RuterParser.parseRealtimeData(getContentFromUrl(REALTIME_BASE_URL + STOP_ID_STROEMSVEIEN));
-            departures.addAll(RuterParser.parseRealtimeData(getContentFromUrl(REALTIME_BASE_URL + STOP_ID_JORDAL)));
-            if (departures.size() > 0) {
-                ruterRepository.insertDepartures(departures);
+            try {
+                departures.addAll(RuterParser.parseRealtimeData(getContentFromUrl(REALTIME_BASE_URL + STOP_ID_JORDAL)));
+                PreferenceHelper.writeDateTime(context, PreferenceHelper.PrefName.RUTER_REALTIME_PREVIOUS_FETCH_TIME, DateTime.now());
+                HomeCentralWorkManager.scheduleSyncDepartures(context, true, false);
+                if (departures.size() > 0) {
+                    ruterRepository.insertDepartures(departures);
+                }
+                Log.d("RuterUtil", "departures sync completed");
+            } catch (SocketTimeoutException e){
+                Log.d("RuterUtil", "departures sync FAILED");
             }
-
-            PreferenceHelper.writeDateTime(context, PreferenceHelper.PrefName.RUTER_REALTIME_PREVIOUS_FETCH_TIME, DateTime.now());
-            HomeCentralWorkManager.scheduleSyncDepartures(context, true);
-            Log.d("RuterUtil", "sync completed");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,8 +71,10 @@ public class RuterUtil {
         ruterRepository.deleteDepartures();
     }
 
-    private static String getContentFromUrl(String url) throws IOException {
-        OkHttpClient client = new OkHttpClient();
+    private static String getContentFromUrl(String url) throws SocketTimeoutException, IOException {
+        //OkHttpClient client = new OkHttpClient();
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS);
+        OkHttpClient client = clientBuilder.build();
 
         Request request = new Request.Builder()
                 .url(url)
@@ -75,9 +82,13 @@ public class RuterUtil {
                 .addHeader("content-type", "application/json")
                 .build();
 
-        Response response = client.newCall(request).execute();
-        if (response.body() != null) {
-            return response.body().string();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.body() != null) {
+                return response.body().string();
+            }
+        } catch (SocketTimeoutException e){
+            Log.d("RuterUtil", e.getMessage());
         }
         return null;
     }

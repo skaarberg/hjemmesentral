@@ -17,13 +17,21 @@ import com.homecentral.jrs.hjemmesentral.activity.MainActivity;
 import com.homecentral.jrs.hjemmesentral.activity.WeatherDetailsActivity;
 import com.homecentral.jrs.hjemmesentral.adapter.YrAdapter;
 import com.homecentral.jrs.hjemmesentral.model.yr.forecast.Time;
+import com.homecentral.jrs.hjemmesentral.scheduler.HomeCentralWorkManager;
+import com.homecentral.jrs.hjemmesentral.util.PreferenceHelper;
+import com.homecentral.jrs.hjemmesentral.view.UpdateBar;
 import com.homecentral.jrs.hjemmesentral.viewmodel.YrViewModel;
 
-public class YrFragment extends Fragment implements YrAdapter.OnWeatherClickListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class YrFragment extends Fragment implements YrAdapter.OnWeatherClickListener, UpdateBar.UpdateButtonListener, UpdateBar.SwitchFragmentButtonListener {
 
     private YrAdapter mAdapter;
     private YrViewModel mYrViewModel;
-    private OnFragmentInteractionListener mListener;
+
+    @BindView(R.id.update_bar)
+    UpdateBar updateBar;
 
     public static YrFragment newInstance() {
         YrFragment fragment = new YrFragment();
@@ -41,6 +49,7 @@ public class YrFragment extends Fragment implements YrAdapter.OnWeatherClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_yr, container, false);
+        ButterKnife.bind(this, root);
 
         RecyclerView rv = root.findViewById(R.id.recyclerView);
         mAdapter = new YrAdapter(getContext(), this);
@@ -56,41 +65,29 @@ public class YrFragment extends Fragment implements YrAdapter.OnWeatherClickList
         mYrViewModel.getWeatherData().observe(mainActivity, weatherdata -> {
             if(weatherdata != null) {
                 mAdapter.setWeatherData(weatherdata.getForecast().getTabular());
+                updateBar.updateUpdateTime(getContext(), PreferenceHelper.PrefName.RUTER_REALTIME_PREVIOUS_FETCH_TIME);
             }
         });
 
+        updateBar.setUpdateButtonListener(this, R.string.header_long_term_weather);
+        updateBar.setSwitchFragmentButtonListener(this);
+
         return root;
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 
     @Override
     public void onClick(Time time) {
         getActivity().startActivity(WeatherDetailsActivity.Companion.newIntent(getActivity(), time));
+    }
+
+    @Override
+    public void updateClicked() {
+        HomeCentralWorkManager.scheduleSyncWeather(false);
+        updateBar.loadStarted();
+    }
+
+    @Override
+    public void switchFragmentClicked() {
+
     }
 }

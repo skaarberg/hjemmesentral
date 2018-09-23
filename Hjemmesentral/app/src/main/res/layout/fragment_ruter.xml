@@ -5,11 +5,25 @@
     android:layout_height="match_parent"
     tools:context=".fragment.RuterFragment">
 
-    <android.support.v7.widget.RecyclerView
-        tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:listitem="@layout/ruter_list_item"
-        android:id="@+id/ruterRecyclerView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.homecentral.jrs.hjemmesentral.view.UpdateBar
+            android:id="@+id/update_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <android.support.v7.widget.RecyclerView
+            tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            tools:listitem="@layout/ruter_list_item"
+            android:id="@+id/ruterRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+
 
 </FrameLayout>

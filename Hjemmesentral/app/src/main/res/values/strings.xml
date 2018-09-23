@@ -7,4 +7,8 @@
     <string name="departure_time_minutes">%d min</string>
     <string name="departure_time_now">Nå</string>
 
+    <string name="header_departures">Avganger fra Galgeberg</string>
+    <string name="header_long_term_weather">Langtidsvarsel</string>
+    <string name="header_time">Time for time</string>
+
 </resources>
