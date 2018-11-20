@@ -22,7 +22,7 @@ import org.joda.time.DateTime;
 import java.util.List;
 import java.util.Locale;
 
-public class YrAdapter extends RecyclerView.Adapter<YrAdapter.WeatherViewHolder> {
+public class YrLongtermAdapter extends RecyclerView.Adapter<YrLongtermAdapter.WeatherViewHolder> {
 
     public interface OnWeatherClickListener{
         void onClick(Time time);
@@ -64,7 +64,7 @@ public class YrAdapter extends RecyclerView.Adapter<YrAdapter.WeatherViewHolder>
     private List<Time> mForecast;
     private OnWeatherClickListener mOnWeatherClickListener;
 
-    public YrAdapter(Context context, OnWeatherClickListener onWeatherClickListener) {
+    public YrLongtermAdapter(Context context, OnWeatherClickListener onWeatherClickListener) {
         mContext = context;
         mInflater = LayoutInflater.from(mContext);
         mOnWeatherClickListener = onWeatherClickListener;

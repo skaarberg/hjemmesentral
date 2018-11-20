@@ -1,27 +1,48 @@
 package com.homecentral.jrs.hjemmesentral.util;
 
-import android.annotation.TargetApi;
-import android.os.PowerManager;
-import android.util.Log;
+import android.app.Activity;
+import android.os.CountDownTimer;
+import android.view.WindowManager;
+
+import com.homecentral.jrs.hjemmesentral.application.HjemmesentralApplication;
 
 public class ScreenUtil {
 
-    //private PowerManager mPowerManager;
-    //private PowerManager.WakeLock mWakeLock;
+    private static CountDownTimer countDownTimer;
 
-    public static void turnOnScreen(PowerManager powerManager){
-        // turn on screen
-        Log.v("ProximityActivity", "ON!");
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "RuterUtil:tag");
-        wakeLock.acquire(10*60*1000L /*10 minutes*/);
+    private static CountDownTimer getTimerInstance(Activity activity){
+
+        if(countDownTimer == null) {
+            countDownTimer = new CountDownTimer(15000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                }
+
+                public void onFinish() {
+                    turnOffScreen(activity);
+                }
+
+            };
+        }
+        else {
+            countDownTimer.cancel();
+        }
+        return countDownTimer;
     }
 
-    @TargetApi(21) //Suppress lint error for PROXIMITY_SCREEN_OFF_WAKE_LOCK
-    public static void turnOffScreen(PowerManager powerManager){
-        // turn off screen
-        Log.v("ProximityActivity", "OFF!");
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, "RuterUtil:tag");
-        wakeLock.acquire(10*60*1000L /*10 minutes*/);
+    public static void turnOnScreen(Activity activity){
+        WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
+        lp.screenBrightness = 0.50f;
+        activity.getWindow().setAttributes( lp );
+
+        getTimerInstance(activity).start();
+        HjemmesentralApplication.getInstance().setScreenIsActivated(true);
     }
 
+    private static void turnOffScreen(Activity activity){
+        WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
+        lp.screenBrightness = 0.01f;
+        activity.getWindow().setAttributes( lp );
+        HjemmesentralApplication.getInstance().setScreenIsActivated(false);
+    }
 }

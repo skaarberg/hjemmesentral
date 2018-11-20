@@ -12,9 +12,12 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.util.Log
 import com.homecentral.jrs.hjemmesentral.util.ScreenUtil
+import android.view.WindowManager
 
 
-class MainActivity : AppCompatActivity() {
+
+
+class MainActivity : ScreenAutoOffActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +31,10 @@ class MainActivity : AppCompatActivity() {
         HomeCentralWorkManager.scheduleSyncLines(this);
         HomeCentralWorkManager.scheduleSyncDepartures(this, false, false);
 
-        ScreenUtil.turnOffScreen(getSystemService(Context.POWER_SERVICE) as PowerManager?)
+        //ScreenUtil.turnOffScreen(getSystemService(Context.POWER_SERVICE) as PowerManager?)
+
+        val lp = window.attributes
+        lp.screenBrightness = 0.51f
+        window.attributes = lp
     }
 }

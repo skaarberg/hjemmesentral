@@ -2,8 +2,6 @@ package com.homecentral.jrs.hjemmesentral.fragment;
 
 import android.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +13,8 @@ import android.view.ViewGroup;
 import com.homecentral.jrs.hjemmesentral.R;
 import com.homecentral.jrs.hjemmesentral.activity.MainActivity;
 import com.homecentral.jrs.hjemmesentral.activity.WeatherDetailsActivity;
-import com.homecentral.jrs.hjemmesentral.adapter.YrAdapter;
+import com.homecentral.jrs.hjemmesentral.adapter.YrHourlyAdapter;
+import com.homecentral.jrs.hjemmesentral.adapter.YrLongtermAdapter;
 import com.homecentral.jrs.hjemmesentral.model.yr.forecast.Time;
 import com.homecentral.jrs.hjemmesentral.scheduler.HomeCentralWorkManager;
 import com.homecentral.jrs.hjemmesentral.util.PreferenceHelper;
@@ -25,20 +24,13 @@ import com.homecentral.jrs.hjemmesentral.viewmodel.YrViewModel;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class YrFragment extends Fragment implements YrAdapter.OnWeatherClickListener, UpdateBar.UpdateButtonListener, UpdateBar.SwitchFragmentButtonListener {
+public class YrHourlyFragment extends Fragment implements YrLongtermAdapter.OnWeatherClickListener, UpdateBar.UpdateButtonListener, UpdateBar.SwitchFragmentButtonListener{
 
-    private YrAdapter mAdapter;
+    private YrHourlyAdapter mAdapter;
     private YrViewModel mYrViewModel;
 
     @BindView(R.id.update_bar)
     UpdateBar updateBar;
-
-    public static YrFragment newInstance() {
-        YrFragment fragment = new YrFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +44,7 @@ public class YrFragment extends Fragment implements YrAdapter.OnWeatherClickList
         ButterKnife.bind(this, root);
 
         RecyclerView rv = root.findViewById(R.id.recyclerView);
-        mAdapter = new YrAdapter(getContext(), this);
+        mAdapter = new YrHourlyAdapter(getContext(), this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rv.setLayoutManager(layoutManager);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
@@ -62,7 +54,16 @@ public class YrFragment extends Fragment implements YrAdapter.OnWeatherClickList
         MainActivity mainActivity = (MainActivity) getActivity();
         mYrViewModel = ViewModelProviders.of(mainActivity).get(YrViewModel.class);
 
-        mYrViewModel.getWeatherData().observe(mainActivity, weatherdata -> {
+        /*
+        mYrViewModel.getLongtermWeatherData().observe(mainActivity, weatherdata -> {
+            if(weatherdata != null) {
+                mAdapter.setWeatherData(weatherdata.getForecast().getTabular());
+                updateBar.updateUpdateTime(getContext(), PreferenceHelper.PrefName.RUTER_REALTIME_PREVIOUS_FETCH_TIME);
+            }
+        });
+        */
+
+        mYrViewModel.getHourlyWeatherData().observe(mainActivity, weatherdata -> {
             if(weatherdata != null) {
                 mAdapter.setWeatherData(weatherdata.getForecast().getTabular());
                 updateBar.updateUpdateTime(getContext(), PreferenceHelper.PrefName.RUTER_REALTIME_PREVIOUS_FETCH_TIME);
@@ -90,4 +91,5 @@ public class YrFragment extends Fragment implements YrAdapter.OnWeatherClickList
     public void switchFragmentClicked() {
 
     }
+
 }

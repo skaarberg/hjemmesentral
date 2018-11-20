@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_yr"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:name="com.homecentral.jrs.hjemmesentral.fragment.YrFragment"
+        android:name="com.homecentral.jrs.hjemmesentral.fragment.YrLongTermFragment"
         android:id="@+id/fragmentTemp"
         android:layout_weight="50"/>
 

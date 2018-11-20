@@ -11,15 +11,17 @@ public class YrViewModel extends AndroidViewModel {
 
     private YrRepository mRepository;
 
-    private LiveData<LongTermWeatherData> mWeatherData;
+    private LiveData<LongTermWeatherData> mLongtermWeatherData;
 
     public YrViewModel (Application application) {
         super(application);
         mRepository = new YrRepository(application);
-        mWeatherData = mRepository.getWeatherData();
+        mLongtermWeatherData = mRepository.getWeatherData();
     }
 
-    public LiveData<LongTermWeatherData> getWeatherData() { return mWeatherData; }
+    public LiveData<LongTermWeatherData> getLongtermWeatherData() { return mLongtermWeatherData; }
 
     public void insert(LongTermWeatherData weatherData) { mRepository.insert(weatherData); }
+
+
 }
